@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from celery.schedules import crontab
 
 from pathlib import Path
 
@@ -108,11 +109,20 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
-
+CELERY_TIMEZONE = 'UTC'  # Replace with your desired timezone
 USE_I18N = True
 
 USE_TZ = True
+# Celery Configuration
+CELERY_BROKER_URL = 'amqp://localhost'  # RabbitMQ broker URL
+CELERY_RESULT_BACKEND = 'rpc://'  # Use RPC backend for results
 
+CELERY_BEAT_SCHEDULE = {
+    'example_task': {
+        'task': 'asyncapp.tasks.example_task',  # Replace with your actual task path
+        'schedule': crontab(minute='*/15'),  # Example: run every 15 minutes
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
